@@ -8,6 +8,9 @@
 </head>
 <body>
   <div class="container">
+
+    <div class="bar"></div>
+
     <div class="gameboard">
       <div class="place" id="n1"></div>
       <div class="place" id="n2"></div>
@@ -19,7 +22,26 @@
       <div class="place" id="n8"></div>
       <div class="place" id="n9"></div>
     </div>
+
+    <button class="play-again hidden">Play again</button>
   </div>
+
+
+  <dialog class="modal">
+    <form>
+      <div class="input-container">
+        <div class="X">
+          <p>X</p>
+          <input type="text" id="player1" required>
+        </div>
+        <div class="Y">
+          <p>Y</p>
+          <input type="text" id="player2" required>
+        </div>
+      </div>
+      <button class="play">Play</button>
+    </form>
+  </dialog>
   
   <script src="./script.js"></script>
 </body>

@@ -36,7 +36,11 @@ function createPlayer(name, marker) {
     return playerName;
   };
 
-  return { getPlayerMarker, getPlayerName };
+  const setPlayerName = (newName) => {
+    playerName = newName;
+  };
+
+  return { getPlayerMarker, getPlayerName, setPlayerName };
 }
 
 // a function to check for winner
@@ -128,34 +132,92 @@ const gameFlow = (function () {
   return { getCurrentMarker, changeMarker };
 })();
 
+// a function to check if an element conatin a marker
+
+function isEmpty(element) {
+  if (element.textContent.trim() === '') {
+    return true;
+  }
+  else return false;
+}
+
+// the game begin here
+
+const playAgain = document.querySelector('.play-again')
+
+const input1 = document.querySelector('#player1');
+const input2 = document.querySelector('#player2');
+
 let player1 = createPlayer('soso', 'X');
 let player2 = createPlayer('ruru', 'O');
 
+const modal = document.querySelector('.modal');
+modal.showModal();
+
+const play = document.querySelector('.play')
+play.addEventListener('click', (e) => {
+  if (input1.checkValidity() && input2.checkValidity()){
+    player1.setPlayerName(input1.value);
+    player2.setPlayerName(input2.value);
+    modal.close();
+    e.preventDefault();
+    bar.textContent = `${player1.getPlayerName()} Turn`;
+  }
+});
+
 const places = document.querySelectorAll(".place");
+const bar = document.querySelector(".bar");
 
 places.forEach(place => {
   place.addEventListener("click", () => {
-    let index = place.id.slice(1);
-    Gameboard.addMarker(gameFlow.getCurrentMarker(), index);
-
-    place.textContent = gameFlow.getCurrentMarker();
-    gameFlow.changeMarker();
-
-    if (gameOver.isWinner()) {
-      let winnerMarker = gameOver.getWinnerMarker();
-      if (player1.getPlayerMarker() === winnerMarker) {
-        alert(`${player1.getPlayerName()} is a winner!`);
+    if (isEmpty(place) && !gameOver.isWinner() && !gameOver.isTie()) {
+      console.log(isEmpty(place));
+      let index = place.id.slice(1);
+      Gameboard.addMarker(gameFlow.getCurrentMarker(), index);
+  
+      place.textContent = gameFlow.getCurrentMarker();
+  
+      if (gameFlow.getCurrentMarker() == 'X') {
+        bar.textContent = `${player2.getPlayerName()} Turn`;
       }
       else {
-        alert(`${player2.getPlayerName()} is a winner!`);
+        bar.textContent = `${player1.getPlayerName()} Turn`;
       }
-      location.reload();
-    }
-    else if (gameOver.isTie()) {
-      alert('Game is a Tie!')
-      location.reload();
+      gameFlow.changeMarker();
+  
+      if (gameOver.isWinner()) {
+        let winnerMarker = gameOver.getWinnerMarker();
+        if (player1.getPlayerMarker() === winnerMarker) {
+          bar.textContent = `${player1.getPlayerName()} is a winner!`;
+        }
+        else {
+          bar.textContent = `${player2.getPlayerName()} is a winner!`;
+        }
+        playAgain.classList.toggle('hidden');
+      }
+      else if (gameOver.isTie()) {
+        bar.textContent = 'Game is a Tie!';
+        playAgain.classList.toggle('hidden');
+      }
     }
   });
+});
+
+// to create a new match
+
+playAgain.addEventListener('click', (e) => {
+  playAgain.classList.toggle('hidden');
+  Gameboard.clearGameboard();
+
+  places.forEach(place => {
+    place.textContent = '';
+  });
+
+  bar.textContent = `${player1.getPlayerName()} Turn`;
+
+  if (gameFlow.getCurrentMarker() === 'O') {
+    gameFlow.changeMarker();
+  }
 });
 
 
