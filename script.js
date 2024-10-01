@@ -151,7 +151,9 @@ const input2 = document.querySelector('#player2');
 let player1 = createPlayer('soso', 'X');
 let player2 = createPlayer('ruru', 'O');
 
+const backdrop = document.querySelector('.backdrop');
 const modal = document.querySelector('.modal');
+backdrop.showModal();
 modal.showModal();
 
 const play = document.querySelector('.play')
@@ -159,6 +161,8 @@ play.addEventListener('click', (e) => {
   if (input1.checkValidity() && input2.checkValidity()){
     player1.setPlayerName(input1.value);
     player2.setPlayerName(input2.value);
+
+    backdrop.close();
     modal.close();
     e.preventDefault();
     bar.textContent = `${player1.getPlayerName()} Turn`;
